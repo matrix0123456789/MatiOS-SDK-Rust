@@ -77,8 +77,8 @@ unsafe impl GlobalAlloc for LinkedListAlloc {
 }
 
 
-#[global_allocator]
-pub static ALLOC: LinkedListAlloc = LinkedListAlloc::new();
+// #[global_allocator]
+// pub static ALLOC: LinkedListAlloc = LinkedListAlloc::new();
 
 
 
