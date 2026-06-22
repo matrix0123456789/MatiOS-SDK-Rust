@@ -2,14 +2,16 @@ use crate::syscalls::SyscallRequest;
 use crate::uuid::Uuid;
 use alloc::boxed::Box;
 use alloc::string::String;
+use alloc::vec;
 use alloc::vec::Vec;
-pub struct newGetResourceInfoV1Request {
+pub struct GetResourceInfoV1Request {
     pub uuid: Uuid,
 
 }
 
-pub struct RequestResourceV1Response {
-    pub uuid: Uuid
+pub struct GetResourceInfoV1Response {
+    pub uuid: Uuid,
+    pub methods:vec::Vec<String>
 
 }
 impl GetResourceInfoV1Request {

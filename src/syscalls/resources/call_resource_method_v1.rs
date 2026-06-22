@@ -10,6 +10,7 @@ pub struct CallResourceMethodV1 {
     pub args: TypedValue,
 }
 
+
 impl CallResourceMethodV1 {
     pub fn create(resource: Uuid, method: String, args: TypedValue) -> Box<SyscallRequest<Self>> {
         Box::new(SyscallRequest {

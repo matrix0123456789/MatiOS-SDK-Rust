@@ -7,7 +7,7 @@ pub struct TypedValue {
     value: usize,
 }
 impl TypedValue {
-    pub fn null(value: bool) -> TypedValue {
+    pub fn null() -> TypedValue {
         TypedValue {
             value_type: 0,
             value: 0,
