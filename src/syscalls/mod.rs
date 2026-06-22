@@ -1,4 +1,4 @@
-use crate::sdk::uuid::Uuid;
+use crate::uuid::Uuid;
 #[repr(C)]
 pub struct SyscallRequest<T> {
     pub size: usize,

@@ -1,5 +1,5 @@
-use crate::sdk::syscalls::SyscallRequest;
-use crate::sdk::uuid::Uuid;
+use crate::syscalls::SyscallRequest;
+use crate::uuid::Uuid;
 use alloc::boxed::Box;
 use alloc::string::String;
 use alloc::vec::Vec;
@@ -17,7 +17,7 @@ impl CreateResourceV1 {
     pub fn create(resource_type: Uuid, owner: Uuid,tags:Vec<Uuid>) -> Box<SyscallRequest<Self>> {
         Box::new(SyscallRequest {
             size: size_of::<Self>(),
-            uuid: crate::sdk::uuid::Uuid::from_u128(0xb2828475_e770_4bdc_86e0_695695d6bab0)                ,
+            uuid: crate::uuid::Uuid::from_u128(0xb2828475_e770_4bdc_86e0_695695d6bab0)                ,
             payload: Self {
                 resource_type,
                 owner,

@@ -7,7 +7,7 @@ pub struct Uuid([u8; 16]);
 #[macro_export]
 macro_rules! uuid {
     ($uuid:expr) => {{
-        const OUTPUT: $crate::sdk::Uuid = match $crate::sdk::Uuid::try_parse($uuid) {
+        const OUTPUT: $crate::Uuid = match $crate::Uuid::try_parse($uuid) {
             $crate::__macro_support::Ok(u) => u,
             $crate::__macro_support::Err(_) => panic!("invalid UUID"),
         };

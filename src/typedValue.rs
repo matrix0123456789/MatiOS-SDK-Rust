@@ -1,6 +1,6 @@
 use alloc::boxed::Box;
 use alloc::string::String;
-use crate::sdk::uuid::Uuid;
+use crate::uuid::Uuid;
 
 pub struct TypedValue {
     value_type: usize,
