@@ -2,5 +2,9 @@
 name = "MatiOS-SDK-Rust"
 version = "0.1.0"
 edition = "2021"
+authors = ["Mateusz Krawczyk <mateusz.krawczyk@green-code.studio>"]
+repository = "https://github.com/matrix0123456789/MatiOS-SDK-Rust"
+description = "Sdk for creating apps for MatiOS in rust"
+license = "MIT"
 
 [dependencies]
