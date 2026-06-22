@@ -218,3 +218,6 @@ impl Clone for Uuid {
         Uuid::from_u128(self.as_u128())
     }
 }
+impl Copy for Uuid {
+
+}
