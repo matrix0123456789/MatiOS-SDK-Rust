@@ -2,7 +2,7 @@ use crate::syscalls::SyscallRequest;
 use crate::uuid::Uuid;
 use alloc::boxed::Box;
 use alloc::string::String;
-
+#[repr(C)]
 pub struct PrintV1 {
 
  pub text:String

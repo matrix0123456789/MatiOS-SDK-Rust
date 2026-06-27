@@ -4,11 +4,12 @@ use alloc::boxed::Box;
 use alloc::string::String;
 use alloc::vec;
 use alloc::vec::Vec;
+#[repr(C)]
 pub struct GetResourceInfoV1Request {
     pub uuid: Uuid,
 
 }
-
+#[repr(C)]
 pub struct GetResourceInfoV1Response {
     pub uuid: Uuid,
     pub methods:vec::Vec<String>

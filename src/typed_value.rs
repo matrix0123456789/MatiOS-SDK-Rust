@@ -81,4 +81,14 @@ impl TypedValue {
             value: unsafe{Box::into_raw(Box::from(value)) as *const String as usize},
         }
     }
+    pub fn to_string_verbose(&self)->String{
+        if(self.value_type == 0){
+            return String::from("null");
+        }else if(self.value_type == 11){
+            return unsafe{(*((self.value as *const String))).clone()};
+        }
+        else{
+            return String::from("other type TODO");
+        }
+    }
 }
