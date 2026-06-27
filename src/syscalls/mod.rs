@@ -14,3 +14,4 @@ pub struct SyscallResponse<T> {
 pub mod debug;
 pub mod process;
 pub mod resources;
+pub mod syscall_id;

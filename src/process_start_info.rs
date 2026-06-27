@@ -47,3 +47,6 @@ pub fn syscall_sync<TReq, TResp>(call_uuid:Uuid, payload: TReq) -> *const TResp 
     let response= (ProcessStartInfo::get().syscallSync)(Box::into_raw(Box::new(SyscallRequest{size:size_of::<TReq>(), uuid:call_uuid, payload})) as usize) as *const SyscallResponse<TResp>;
     return unsafe{&(*response).payload};
 }
+pub fn syscall_sync_noreturn<TReq>(call_uuid:Uuid, payload: TReq) {
+    (ProcessStartInfo::get().syscallSync)(Box::into_raw(Box::new(SyscallRequest{size:size_of::<TReq>(), uuid:call_uuid, payload})) as usize);
+}
