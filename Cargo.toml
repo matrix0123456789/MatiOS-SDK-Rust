@@ -1,6 +1,6 @@
 [package]
 name = "MatiOS-SDK-Rust"
-version = "0.1.11"
+version = "0.1.12"
 edition = "2021"
 authors = ["Mateusz Krawczyk <mateusz.krawczyk@green-code.studio>"]
 repository = "https://github.com/matrix0123456789/MatiOS-SDK-Rust"
