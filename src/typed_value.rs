@@ -1,10 +1,16 @@
 use alloc::boxed::Box;
 use alloc::string::String;
+use alloc::layout::Layout;
 use crate::uuid::Uuid;
 
 pub struct TypedValue {
     value_type: usize,
     value: usize,
+}
+pub struct KeyedTypedValue {
+    pub key: String,
+    pub value_type: usize,
+    pub value: usize,
 }
 impl TypedValue {
     pub fn null() -> TypedValue {
@@ -81,6 +87,40 @@ impl TypedValue {
             value: unsafe{Box::into_raw(Box::from(value)) as *const String as usize},
         }
     }
+    pub fn vector(values: &[TypedValue]) -> TypedValue {
+        unsafe {
+            let buff = alloc::alloc::alloc(Layout{
+                size:values.len() * core::mem::size_of::<TypedValue>() + core::mem::size_of::<usize>(),
+                align:core::mem::align_of::<TypedValue>(),
+            });
+            (buff as *mut usize).write(values.len());
+            let valuesPtr = ((buff as *mut usize)).offset(1) as *mut TypedValue;
+            for value in values {
+                valuesPtr.write_volatile(*value)
+            }
+            TypedValue {
+                value_type: 12,
+                value: buff as usize,
+            }
+        }
+    }
+    pub fn structure(values: &[KeyedTypedValue]) -> TypedValue {
+        unsafe {
+            let buff = alloc::alloc::alloc(Layout{
+                size:values.len() * core::mem::size_of::<KeyedTypedValue>() + core::mem::size_of::<usize>(),
+                align:core::mem::align_of::<KeyedTypedValue>(),
+            });
+            (buff as *mut usize).write(values.len());
+            let valuesPtr = ((buff as *mut usize)).offset(1) as *mut KeyedTypedValue;
+            for value in values {
+                valuesPtr.write_volatile(*value)
+            }
+            TypedValue {
+                value_type: 13,
+                value: buff as usize,
+            }
+        }
+    }
     pub fn to_string_verbose(&self)->String{
         if(self.value_type == 0){
             return String::from("null");
@@ -91,4 +131,14 @@ impl TypedValue {
             return String::from("other type TODO");
         }
     }
+}
+impl KeyedTypedValue {
+    pub fn new(key: String, value: TypedValue) -> KeyedTypedValue {
+        KeyedTypedValue {
+            key,
+            value_type: value.value_type,
+            value: value.value,
+        }
+    }
+
 }
