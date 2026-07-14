@@ -6,3 +6,4 @@ pub mod uuid;
 pub mod resources;
 pub mod typed_value;
 pub mod process_start_info;
+pub mod gui;

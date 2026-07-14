@@ -5,6 +5,7 @@ use alloc::boxed::Box;
 use crate::syscalls::{SyscallRequest, SyscallResponse};
 
 static mut GLOBAL_PROCESS_START_INFO:  *const ProcessStartInfo=0 as *const ProcessStartInfo;
+#[repr(C)]
 pub struct ProcessStartInfo {
     pub processId: Uuid,
     pub debugPrint: extern "win64" fn(&str),

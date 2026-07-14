@@ -1,12 +1,13 @@
+use crate::uuid::Uuid;
 use alloc::boxed::Box;
 use alloc::string::String;
-use alloc::layout::Layout;
-use crate::uuid::Uuid;
 
+#[repr(C)]
 pub struct TypedValue {
     value_type: usize,
     value: usize,
 }
+#[repr(C)]
 pub struct KeyedTypedValue {
     pub key: String,
     pub value_type: usize,
@@ -78,25 +79,29 @@ impl TypedValue {
     pub fn uuid(value: Uuid) -> TypedValue {
         TypedValue {
             value_type: 10,
-            value: unsafe{Box::into_raw(Box::from(value)) as *const u8 as usize},
+            value: unsafe { Box::into_raw(Box::from(value)) as *const u8 as usize },
         }
     }
     pub fn string(value: String) -> TypedValue {
         TypedValue {
             value_type: 11,
-            value: unsafe{Box::into_raw(Box::from(value)) as *const String as usize},
+            value: unsafe { Box::into_raw(Box::from(value)) as *const String as usize },
         }
     }
     pub fn vector(values: &[TypedValue]) -> TypedValue {
         unsafe {
-            let buff = alloc::alloc::alloc(Layout{
-                size:values.len() * core::mem::size_of::<TypedValue>() + core::mem::size_of::<usize>(),
-                align:core::mem::align_of::<TypedValue>(),
-            });
+            let buff = alloc::alloc::alloc(
+                core::alloc::Layout::from_size_align(
+                    values.len() * core::mem::size_of::<TypedValue>()
+                        + core::mem::size_of::<usize>(),
+                    core::mem::align_of::<TypedValue>(),
+                )
+                .unwrap(),
+            );
             (buff as *mut usize).write(values.len());
-            let valuesPtr = ((buff as *mut usize)).offset(1) as *mut TypedValue;
-            for value in values {
-                valuesPtr.write_volatile(*value)
+            let valuesPtr = (buff as *mut usize).offset(1) as *mut TypedValue;
+            for i in 0..values.len() {
+                valuesPtr.offset(i as isize).write_volatile(values[i].clone())
             }
             TypedValue {
                 value_type: 12,
@@ -106,14 +111,18 @@ impl TypedValue {
     }
     pub fn structure(values: &[KeyedTypedValue]) -> TypedValue {
         unsafe {
-            let buff = alloc::alloc::alloc(Layout{
-                size:values.len() * core::mem::size_of::<KeyedTypedValue>() + core::mem::size_of::<usize>(),
-                align:core::mem::align_of::<KeyedTypedValue>(),
-            });
+            let buff = alloc::alloc::alloc(
+                core::alloc::Layout::from_size_align(
+                    values.len() * core::mem::size_of::<KeyedTypedValue>()
+                        + core::mem::size_of::<usize>(),
+                    core::mem::align_of::<KeyedTypedValue>(),
+                )
+                    .unwrap(),
+            );
             (buff as *mut usize).write(values.len());
-            let valuesPtr = ((buff as *mut usize)).offset(1) as *mut KeyedTypedValue;
-            for value in values {
-                valuesPtr.write_volatile(*value)
+            let valuesPtr = (buff as *mut usize).offset(1) as *mut KeyedTypedValue;
+            for i in 0..values.len() {
+                valuesPtr.offset(i as isize).write_volatile(values[i].clone())
             }
             TypedValue {
                 value_type: 13,
@@ -121,13 +130,12 @@ impl TypedValue {
             }
         }
     }
-    pub fn to_string_verbose(&self)->String{
-        if(self.value_type == 0){
+    pub fn to_string_verbose(&self) -> String {
+        if (self.value_type == 0) {
             return String::from("null");
-        }else if(self.value_type == 11){
-            return unsafe{(*((self.value as *const String))).clone()};
-        }
-        else{
+        } else if (self.value_type == 11) {
+            return unsafe { (*(self.value as *const String)).clone() };
+        } else {
             return String::from("other type TODO");
         }
     }
@@ -140,5 +148,24 @@ impl KeyedTypedValue {
             value: value.value,
         }
     }
+}
 
+impl Clone for TypedValue {
+    fn clone(&self) -> TypedValue {
+        return TypedValue {
+            value_type: self.value_type,
+            value: self.value,
+        };
+    }
+}
+
+
+impl Clone for KeyedTypedValue {
+    fn clone(&self) -> KeyedTypedValue {
+        return KeyedTypedValue {
+            value_type: self.value_type,
+            value: self.value,
+            key: String::from(self.key.as_str()),
+        };
+    }
 }
