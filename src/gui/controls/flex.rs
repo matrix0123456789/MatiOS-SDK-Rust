@@ -7,6 +7,7 @@ use alloc::vec;
 use alloc::vec::Vec;
 use core::arch::asm;
 use core::cell::RefCell;
+use crate::process_start_info::{syscall_sync, syscall_sync_noreturn, ProcessStartInfo};
 
 pub struct FlexControl {
     pub children: Vec<Box<dyn Control>>,
@@ -18,22 +19,6 @@ impl Control for FlexControl {
         let max_width = 1000;
         let sum_height = 1000;
         for child in self.children.iter() {
-            for i in 0..1000000000 {
-                unsafe {
-                    asm! {
-                    "nop",
-                    "nop",
-                    "nop"
-                    }
-                }
-            }
-            unsafe {
-                asm! {
-                "nop",
-                "nop",
-                "nop"
-                }
-            }
             let render_result = child.render(pixel_ratio);
             rendered_children.push(render_result);
         }
