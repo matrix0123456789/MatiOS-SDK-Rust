@@ -1,6 +1,6 @@
+use alloc::string::String;
 use core::error;
 use core::result;
-
 
 pub struct Uuid([u8; 16]);
 
@@ -32,7 +32,7 @@ impl Uuid {
     pub fn parse_str(input: &str) -> Result<Uuid, u8> {
         try_parse(input.as_bytes())
             .map(Uuid::from_bytes)
-            .map_err(|_|1)
+            .map_err(|_| 1)
     }
 
     // pub const fn from_u128(v: u128) -> Self {
@@ -49,8 +49,36 @@ impl Uuid {
     }
 
     pub fn to_string(&self) -> alloc::string::String {
-        return alloc::string::String::from("Todo");
+        let part1 = self.0[0..4]
+            .iter()
+            .map(|x| u8_to_hex_String(*x))
+            .collect::<String>();
+        let part2 = self.0[4..6]
+            .iter()
+            .map(|x| u8_to_hex_String(*x))
+            .collect::<String>();
+        let part3 = self.0[6..8]
+            .iter()
+            .map(|x| u8_to_hex_String(*x))
+            .collect::<String>();
+        let part4 = self.0[8..10]
+            .iter()
+            .map(|x| u8_to_hex_String(*x))
+            .collect::<String>();
+        let part5 = self.0[10..16]
+            .iter()
+            .map(|x| u8_to_hex_String(*x))
+            .collect::<String>();
+        return part1 + "-" + &part2 + "-" + &part3 + "-" + &part4 + "-" + &part5;
     }
+}
+
+pub fn u8_to_hex_String(x: u8) -> String {
+    let left = x >> 4;
+    let right = x & 0x0f;
+    let leftChar = if (left < 10) { '0' as u8 + left } else { 'a' as u8+ (left - 10) };
+    let rightChar = if (right < 10) { '0' as u8 + right } else { 'a' as u8+ (right - 10) };
+    return ([leftChar as char, rightChar as char]).iter().collect();
 }
 
 const fn try_parse(input: &'_ [u8]) -> Result<[u8; 16], u8> {
@@ -94,10 +122,7 @@ pub(crate) const fn parse_urn(input: &'_ [u8]) -> Result<[u8; 16], u8> {
 }
 
 #[inline]
-pub(crate) const fn parse_simple(
-    s: &'_ [u8],
-    speculative: bool,
-) -> Result<[u8; 16], u8> {
+pub(crate) const fn parse_simple(s: &'_ [u8], speculative: bool) -> Result<[u8; 16], u8> {
     // This length check here removes all other bounds
     // checks in this function
     if s.len() != 32 {
@@ -177,7 +202,6 @@ pub(crate) const fn parse_hyphenated(s: &'_ [u8]) -> Result<[u8; 16], u8> {
     Ok(buf)
 }
 
-
 const HEX_TABLE: &[u8; 256] = &{
     let mut buf = [0; 256];
     let mut i: u8 = 0;
@@ -218,6 +242,4 @@ impl Clone for Uuid {
         Uuid::from_u128(self.as_u128())
     }
 }
-impl Copy for Uuid {
-
-}
+impl Copy for Uuid {}

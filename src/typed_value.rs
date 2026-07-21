@@ -1,6 +1,7 @@
 use crate::uuid::Uuid;
 use alloc::boxed::Box;
 use alloc::string::String;
+use alloc::vec::Vec;
 
 #[repr(C)]
 pub struct TypedValue {
@@ -137,6 +138,19 @@ impl TypedValue {
             return unsafe { (*(self.value as *const String)).clone() };
         } else {
             return String::from("other type TODO");
+        }
+    }
+    pub fn to_vec(&self) -> Vec<TypedValue> {
+        if(self.value_type == 12) {
+            let len = unsafe { *(self.value as *const usize) };
+            let valuesPtr = unsafe { (self.value as *const usize).offset(1) as *const TypedValue };
+            let mut result = Vec::new();
+            for i in 0..len {
+                result.push(unsafe { (*valuesPtr.offset(i as isize)).clone() });
+            }
+            return result;
+        }else{
+            panic!("TypedValue is not a vector");
         }
     }
 }
